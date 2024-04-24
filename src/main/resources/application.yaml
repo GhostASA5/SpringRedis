@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: SpringRedis
+
+  main:
+    allow-circular-references: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  jpa:
+    generate-ddl: true
+  datasource:
+    url: jdbc:postgresql://localhost:5435/news_app
+    username: postgres
+    password: postgres
+    hikari:
+      schema: books_app
+      connection-init-sql: create schema if not exists books_app
+      connection-timeout: 10000
+
+app:
+  cache:
+    cacheType: redis
+    cache-names:
+      - bookByTitleAndAuthor
+      - booksByCategory
+    caches:
+      bookByTitleAndAuthor:
+        expiry: 5s
+      booksByCategory:
+        expiry: 10s
