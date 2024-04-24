@@ -1,5 +1,6 @@
 package com.example.SpringRedis.config;
 
+import com.example.SpringRedis.config.properties.AppCacheProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -8,7 +9,6 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,11 +17,14 @@ import java.util.Map;
 public class CacheConfiguration {
 
     @Bean
-    public CacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
+    public CacheManager redisCacheManager(AppCacheProperties appCacheProperties, LettuceConnectionFactory lettuceConnectionFactory) {
         var defaultConfig = RedisCacheConfiguration.defaultCacheConfig();
         Map<String, RedisCacheConfiguration> configs = new HashMap<>();
 
-        configs.put("bookByTitleAndAuthor", RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofSeconds(5)));
+        appCacheProperties.getCacheNames().forEach(cacheName
+                -> configs.put(cacheName, RedisCacheConfiguration.defaultCacheConfig().entryTtl(
+                        appCacheProperties.getCaches().get(cacheName).getExpiry()
+        )));
 
         return RedisCacheManager.builder(lettuceConnectionFactory)
                 .cacheDefaults(defaultConfig)

@@ -1,7 +1,6 @@
 package com.example.SpringRedis.mapper.delegates;
 
 import com.example.SpringRedis.domain.Book;
-import com.example.SpringRedis.domain.Category;
 import com.example.SpringRedis.mapper.BookMapper;
 import com.example.SpringRedis.service.CategoryService;
 import com.example.SpringRedis.web.dto.book.BookRequest;

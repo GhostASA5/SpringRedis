@@ -20,10 +20,6 @@ public class BookController {
 
     private final BookMapper bookMapper;
 
-    @GetMapping
-    public ResponseEntity<BookListResponse> getBooks() {
-        return ResponseEntity.ok(bookMapper.bookListToResponseList(bookService.findAll()));
-    }
 
     @GetMapping("/{category}")
     public ResponseEntity<BookListResponse> getBooksByCategory(@PathVariable String category) {

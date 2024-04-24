@@ -1,6 +1,7 @@
 package com.example.SpringRedis.mapper;
 
 import com.example.SpringRedis.domain.Book;
+import com.example.SpringRedis.domain.Category;
 import com.example.SpringRedis.mapper.delegates.BookMapperDelegate;
 import com.example.SpringRedis.web.dto.book.BookListResponse;
 import com.example.SpringRedis.web.dto.book.BookRequest;
@@ -30,6 +31,6 @@ public interface BookMapper {
         return response;
     }
 
-
+    Category map(String value);
 
 }

@@ -8,9 +8,10 @@ import com.example.SpringRedis.repository.BookSpecification;
 import com.example.SpringRedis.utils.BeanUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,30 +21,36 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
-    private final CategoryService categoryService;
 
-    public List<Book> findAll() {
-        return bookRepository.findAll();
-    }
+    private final CategoryService categoryService;
 
     public Book findById(Long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book not found"));
     }
 
-    @Cacheable("bookByTitleAndAuthor")
+    @Cacheable(value = "bookByTitleAndAuthor", key = "#title + #author")
     public Book findByTitleAndAuthor(String title, String author) {
         return bookRepository.findAll(BookSpecification.findByTitleAndAuthor(title, author)).get(0);
     }
 
+    @Cacheable(value = "booksByCategory", key = "#category")
     public List<Book> findByCategory(String category) {
         return bookRepository.findAll(BookSpecification.findByCategory(category));
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "bookByTitleAndAuthor", allEntries = true, beforeInvocation = true),
+            @CacheEvict(value = "booksByCategory", allEntries = true, beforeInvocation = true)
+    })
     public Book save(Book book) {
         return bookRepository.save(book);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "bookByTitleAndAuthor", allEntries = true, beforeInvocation = true),
+            @CacheEvict(value = "booksByCategory", allEntries = true, beforeInvocation = true)
+    })
     public Book update(Book book) {
         Book existingBook = findById(book.getId());
         Category excitedCategory = categoryService.findById(book.getCategory().getId());
@@ -52,6 +59,10 @@ public class BookService {
         return bookRepository.save(existingBook);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "bookByTitleAndAuthor", allEntries = true, beforeInvocation = true),
+            @CacheEvict(value = "booksByCategory", allEntries = true, beforeInvocation = true)
+    })
     public void deleteById(Long id) {
         bookRepository.deleteById(id);
     }

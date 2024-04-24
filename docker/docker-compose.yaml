@@ -17,15 +17,16 @@ services:
     ports:
       - "6379:6379"
 
-#  news-service:
-#    image: news-service
-#    build:
-#      context: docker
-#      dockerfile: Dockerfile
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      - SERVER_PORT= 8080
-#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/news_app
-#    depends_on:
-#      - postgres
+  books-service:
+    image: books-service
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - SERVER_PORT= 8080
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres/books_app
+    depends_on:
+      - postgres
+      - redis
