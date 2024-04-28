@@ -13,7 +13,7 @@ spring:
   jpa:
     generate-ddl: true
   datasource:
-    url: jdbc:postgresql://localhost:5435/news_app
+    url: jdbc:postgresql://localhost:5435/books_app
     username: postgres
     password: postgres
     hikari:

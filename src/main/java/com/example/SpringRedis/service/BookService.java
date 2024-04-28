@@ -13,6 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 @Service
@@ -31,7 +32,12 @@ public class BookService {
 
     @Cacheable(value = "bookByTitleAndAuthor", key = "#title + #author")
     public Book findByTitleAndAuthor(String title, String author) {
-        return bookRepository.findAll(BookSpecification.findByTitleAndAuthor(title, author)).get(0);
+        try {
+            return bookRepository.findAll(BookSpecification.findByTitleAndAuthor(title, author)).get(0);
+        } catch (IndexOutOfBoundsException ex){
+            throw new EntityNotFoundException(MessageFormat.format("Book with title {0} and author {1} not found.", title, author));
+        }
+
     }
 
     @Cacheable(value = "booksByCategory", key = "#category")
